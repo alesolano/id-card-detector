@@ -5,6 +5,7 @@
 .cache
 .python_history
 __pycache__
+.bash_history
 
 # Keras
 .keras
