@@ -84,20 +84,20 @@ detection_classes = tf.get_default_graph().get_tensor_by_name('detection_classes
 num_detections = tf.get_default_graph().get_tensor_by_name('num_detections:0')
 
 
-
-
 # video path
 video_path = 'veriff1.mp4'
 frame_provider = VideoReader(video_path)
 
 img_i = -1
-skip = 10
+skip = 100
+
 
 with tf.Session() as sess:
     for image in frame_provider:
 
         img_i += 1
-        if img_i % skip != 0: continue
+        #if img_i % skip != 0: continue
+        if (img_i != 130) and (img_i != 200): continue
 
         image_expanded = np.expand_dims(image, axis=0)
 
@@ -105,6 +105,8 @@ with tf.Session() as sess:
         (boxes, scores, classes, num) = sess.run(
             [detection_boxes, detection_scores, detection_classes, num_detections],
             feed_dict={image_tensor: image_expanded})
+
+        print(1, image.shape)
 
         # Draw the results of the detection (aka 'visulaize the results')
         image, array_coord = vis_util.visualize_boxes_and_labels_on_image_array(
@@ -115,7 +117,16 @@ with tf.Session() as sess:
             category_index,
             use_normalized_coordinates=True,
             line_thickness=3,
-            min_score_thresh=0.60)
+            min_score_thresh=0.35)
+
+        boxes = boxes[scores > 0.35]
+        print(scores[scores > 0.1])
+        for box in boxes:
+            y_min, x_min, y_max, x_max = box
+            print(img_i)
+            print(x_min, y_min, x_max, y_max)
+        
+        #print(image.shape)
         
         img_path = f'./{img_i:05}.png'
         cv2.imwrite(img_path, image)
