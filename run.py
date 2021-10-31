@@ -1,6 +1,6 @@
 import argparse
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from tensorflow.core.framework import graph_pb2
 
 from infer import evaluate_video
@@ -17,12 +17,12 @@ class Run():
     def load_model(self, model_path='./model/frozen_inference_graph.pb'):
 
         # Load frozen graph
-        tf.compat.v1.reset_default_graph
+        tf.reset_default_graph
         graph_def = graph_pb2.GraphDef()
         with open(model_path, "rb") as f:
             graph_def.ParseFromString(f.read())
         tf.import_graph_def(graph_def, name='')
-        graph = tf.compat.v1.get_default_graph()
+        graph = tf.get_default_graph()
 
         # Input tensor is the image
         self.image_tensor = graph.get_tensor_by_name('image_tensor:0')
@@ -38,7 +38,7 @@ class Run():
 
         self.output_tensors = [detection_boxes, detection_scores, detection_classes]
 
-        self.sess = tf.compat.v1.Session(graph=graph)
+        self.sess = tf.Session(graph=graph)
 
 
     def get_bboxes_from_video(self, video_path, draw=False):
