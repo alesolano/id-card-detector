@@ -1,10 +1,9 @@
+import argparse
+
 import tensorflow as tf
 from tensorflow.core.framework import graph_pb2
 
-
 from infer import evaluate_video
-
-
 
 
 class Run():
@@ -47,3 +46,13 @@ class Run():
 
         return boxes_per_frame
 
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--video_path', type=str, required=True, help='path to the video file')
+    parser.add_argument('--draw', type=bool, default=False, help='flag to draw the poses and save the images')
+    args = parser.parse_args()
+
+    r = Run()
+    boxes = r.get_bboxes_from_video(args.video_path, args.draw)
+    print(boxes)
