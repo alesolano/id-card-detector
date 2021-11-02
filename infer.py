@@ -4,12 +4,13 @@ import numpy as np
 from utils import visualization_utils as vis_util
 
 class VideoReader(object):
-    def __init__(self, file_name):
+    def __init__(self, file_name, resize=None):
         self.file_name = file_name
         try:  # OpenCV needs int to read from webcam
             self.file_name = int(file_name)
         except ValueError:
             pass
+        self.resize = resize
 
     def __iter__(self):
         self.cap = cv2.VideoCapture(self.file_name)
@@ -21,14 +22,20 @@ class VideoReader(object):
         was_read, img = self.cap.read()
         if not was_read:
             raise StopIteration
+
+        if self.resize:
+            width = int(img.shape[1] * self.resize)
+            height = int(img.shape[0] * self.resize)
+            img = cv2.resize(img, (width, height), interpolation = cv2.INTER_AREA)
+
         return img
 
 
-def evaluate_video(sess, video_path, image_tensor, output_tensors, skip=10, thresh=0.3, draw=False):
+def evaluate_video(sess, video_path, image_tensor, output_tensors, resize=None, skip=10, thresh=0.3, draw=False):
 
     boxes_per_frame = {}
     
-    frame_provider = VideoReader(video_path)
+    frame_provider = VideoReader(video_path, resize)
 
     detection_boxes, detection_scores, detection_classes = output_tensors
 

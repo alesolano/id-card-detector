@@ -41,9 +41,11 @@ class Run():
         self.sess = tf.Session(graph=graph)
 
 
-    def get_bboxes_from_video(self, video_path, draw=False):
+    def get_bboxes_from_video(self, video_path, resize=None, draw=False):
 
-        boxes_per_frame = evaluate_video(self.sess, video_path, self.image_tensor, self.output_tensors, draw=draw)
+        boxes_per_frame = evaluate_video(
+            self.sess, video_path, self.image_tensor, self.output_tensors,
+            resize=resize, draw=draw)
 
         return boxes_per_frame
 
