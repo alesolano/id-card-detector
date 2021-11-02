@@ -4,6 +4,9 @@ COPY requirements.txt .
 RUN apt-get update && apt-get install -y gcc ffmpeg libsm6 libxext6
 RUN pip install -r requirements.txt
 
+RUN mkdir /workspace
+WORKDIR /workspace
+
 COPY . .
 
 CMD ["python", "app.py"]
