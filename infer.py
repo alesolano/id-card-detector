@@ -73,7 +73,7 @@ def evaluate_video(sess, video_path, image_tensor, output_tensors, skip=10, thre
         # Reorder
         boxes_per_frame[img_i] = []
         for box in boxes:
-            y_min, x_min, y_max, x_max = box
-            boxes_per_frame[img_i].append((x_min, y_min, x_max, y_max))
+            y_min, x_min, y_max, x_max = box.tolist()
+            boxes_per_frame[img_i].append([x_min, y_min, x_max, y_max])
         
     return boxes_per_frame
